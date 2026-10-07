@@ -25,13 +25,21 @@ if otazka:
 
     try:
         with st.spinner("Premýšľam..."):
-            odpoved = st.session_state.chat.send_message(otazka).text   
+            odpoved = st.session_state.chat.send_message(otazka).text
 
-    except Exception as chyba:
-        st.error(f"CHYBA: {chyba}")
-        st.stop()
+    except Exception:
+        try:
+            # Ak hlavný model zlyhá, skúsime záložný model
+            zalozny_chat = vytvor_chat(
+                st.session_state.klient,
+                model="gemini-3.7-flash"
+            )
+            odpoved = zalozny_chat.send_message(otazka).text
+            st.session_state.chat = zalozny_chat
 
-    odpoved = odpoved or "Prepáč, na toto neviem odpovedať."
+        except Exception:
+            st.error("AI je momentálne nedostupná. Skús otázku znova o chvíľu.")
+            st.stop()
 
     st.chat_message("assistant").write(odpoved)
 

@@ -5,7 +5,7 @@ import sqlite3
 from google import genai
 from google.genai import types
 
-MODEL = "gemini-3.1-flash"
+MODEL = "gemini-3.5-flash"
 
 POKYNY = """Si dátový asistent zdravotnej poisťovne. Odpovedaj po slovensky a stručne.
 Čísla si nikdy nevymýšľaj, vždy ich zisti funkciou spusti_sql.
@@ -36,14 +36,14 @@ def spusti_sql(dotaz: str) -> str:
         conn.close()
 
 
-def vytvor_chat(client):
+def vytvor_chat(client, model=MODEL):
     """Vytvorí rozhovor s Gemini, ktoré môže samo volať funkciu spusti_sql."""
     nastavenia = types.GenerateContentConfig(
         system_instruction=POKYNY,
         tools=[spusti_sql],
     )
 
-    return client.chats.create(model=MODEL, config=nastavenia)
+    return client.chats.create(model=model, config=nastavenia)
 if __name__ == "__main__":
     client = genai.Client()  # API kľúč si načíta z premennej GEMINI_API_KEY
     chat = vytvor_chat(client)
