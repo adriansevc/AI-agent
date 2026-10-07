@@ -25,10 +25,10 @@ if otazka:
 
     try:
         with st.spinner("Premýšľam..."):
-            odpoved = st.session_state.chat.send_message(otazka).text
+            odpoved = st.session_state.chat.send_message(otazka).text   
 
-    except Exception as chyba:
-        st.error(f"AI teraz neodpovedá: {chyba}")
+    except Exception:
+        st.error("AI je momentálne preťažená. Skús otázku znova o chvíľu.")
         st.stop()
 
     odpoved = odpoved or "Prepáč, na toto neviem odpovedať."
